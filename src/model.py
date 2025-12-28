@@ -39,24 +39,30 @@ class Satelite(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
+        self.layer3 = nn.Sequential(
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
         
-        self.layer3 =  nn.Linear(in_features=16*16*32, out_features=10)
+        self.layer4 =  nn.Linear(in_features=8*8*64, out_features=10)
         self.flatten = nn.Flatten()
 
     def forward(self, x):
         x = self.layer1(x)
         x = self.layer2(x)
-        x = self.flatten(x)
         x = self.layer3(x)
+        x = self.flatten(x)
+        x = self.layer4(x)
         return x
     
 model = Satelite()
 optimizer = optim.Adam(model.parameters(), lr = 0.001)
 loss = nn.CrossEntropyLoss()
 
-print("\n Model created ! Training is starting")
+print("\n Model created ! Training is starting...")
 
-for epoch in range(20):
+for epoch in range(40):
     model.train()
     mean_loss = 0
     # i need to split all of this into batches
